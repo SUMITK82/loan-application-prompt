@@ -1,0 +1,42 @@
+[
+  {
+    "question": "How many applicants defaulted on their loans?",
+    "expected_sql": "SELECT COUNT(*) AS defaulted_count FROM loan_applications WHERE default_status = 'defaulted';",
+    "expected_explanation": "This query counts the number of applicants whose default_status is marked as 'defaulted'."
+  },
+  {
+    "question": "What's the average loan amount for self-employed applicants?",
+    "expected_sql": "SELECT AVG(loan_amount) AS average_loan_amount FROM loan_applications WHERE employment_status = 'self-employed';",
+    "expected_explanation": "This query calculates the average loan_amount for applicants whose employment_status is 'self-employed'."
+  },
+  {
+    "question": "Show me the top 5 applicants by loan amount who are still unemployed",
+    "expected_sql": "SELECT applicant_id, age, annual_income, loan_amount, loan_purpose, credit_score, employment_status, default_status, application_date FROM loan_applications WHERE employment_status = 'unemployed' ORDER BY loan_amount DESC LIMIT 5;",
+    "expected_explanation": "This query returns the 5 applicants with employment_status of 'unemployed', sorted by loan_amount in descending order."
+  },
+  {
+    "question": "Which loan purpose has the highest default rate?",
+    "expected_sql": "SELECT loan_purpose, COUNT(*) FILTER (WHERE default_status = 'defaulted') AS defaults, COUNT(*) AS total_applications, ROUND(COUNT(*) FILTER (WHERE default_status = 'defaulted')::NUMERIC / COUNT(*), 4) AS default_rate FROM loan_applications GROUP BY loan_purpose ORDER BY default_rate DESC LIMIT 1;",
+    "expected_explanation": "This query calculates the proportion of defaulted loans for each loan_purpose and returns the purpose with the highest default rate."
+  },
+  {
+    "question": "Show me applicants with a credit score below 550",
+    "expected_sql": "SELECT applicant_id, age, annual_income, loan_amount, loan_purpose, credit_score, employment_status, default_status, application_date FROM loan_applications WHERE credit_score < 550 ORDER BY credit_score ASC;",
+    "expected_explanation": "This query returns all applicants with a credit_score below 550, sorted from lowest to highest score."
+  },
+  {
+    "question": "What is the total number of loan applications in the system?",
+    "expected_sql": "SELECT COUNT(*) AS total_applications FROM loan_applications;",
+    "expected_explanation": "This query counts the total number of rows in the loan_applications table."
+  },
+  {
+    "question": "List all applicants who applied for a home loan after January 1, 2024",
+    "expected_sql": "SELECT applicant_id, age, annual_income, loan_amount, loan_purpose, credit_score, employment_status, default_status, application_date FROM loan_applications WHERE loan_purpose = 'home' AND application_date > '2024-01-01';",
+    "expected_explanation": "This query returns all applicants whose loan_purpose is 'home' and whose application_date is after January 1, 2024."
+  },
+  {
+    "question": "What is the average annual income of applicants who defaulted, broken down by employment status?",
+    "expected_sql": "SELECT employment_status, AVG(annual_income) AS average_income FROM loan_applications WHERE default_status = 'defaulted' GROUP BY employment_status;",
+    "expected_explanation": "This query calculates the average annual_income of defaulted applicants, grouped by their employment_status."
+  }
+]
